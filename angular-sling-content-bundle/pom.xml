@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one
+  or more contributor license agreements.  See the NOTICE file
+  distributed with this work for additional information
+  regarding copyright ownership.  The ASF licenses this file
+  to you under the Apache License, Version 2.0 (the
+  "License"); you may not use this file except in compliance
+  with the License.  You may obtain a copy of the License at
+
+   http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.mikenimer.servers</groupId>
+    <artifactId>angular-sling-content-bundle</artifactId>
+    <packaging>bundle</packaging>
+    <version>1.0-SNAPSHOT</version>
+    <name>angular-sling-content-bundle</name>
+    <description>com.mikenimer.servers - angular-sling-content-bundle</description>
+
+
+    <build>
+
+        <plugins>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <extensions>true</extensions>
+                <version>2.0.1</version>
+                <executions>
+                    <execution>
+                        <id>bundle-manifest</id>
+                        <phase>process-classes</phase>
+                        <goals>
+                            <goal>manifest</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <instructions>
+                        <Include-Resoource>
+                            {maven-resources}
+                        </Include-Resoource>
+                        <Sling-Initial-Content>
+                            SLING-INF/content/sample;overwrite:=true;uninstall:=true;path:=/content/sample
+                        </Sling-Initial-Content>
+                    </instructions>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+
+    <profiles>
+        <profile>
+            <id>deploy-bundles</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.sling</groupId>
+                        <artifactId>maven-sling-plugin</artifactId>
+                        <version>2.0.4-incubator</version>
+                        <executions>
+                            <execution>
+                                <id>install-bundle</id>
+                                <goals>
+                                    <goal>install</goal>
+                                </goals>
+                                <configuration>
+                                    <slingUrl>http://localhost:8080/system/console</slingUrl>
+                                    <user>admin</user>
+                                    <password>admin</password>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+
+
+        <profile>
+            <id>deploy-angular-sample</id>
+            <build>
+                <resources>
+                    <resource>
+                        <directory>yo-sample/dist</directory>
+                        <targetPath>SLING-INF/content/sample</targetPath>
+                        <filtering>false</filtering>
+                    </resource>
+                </resources>
+
+
+                <plugins>
+                    <plugin>
+                        <groupId>com.github.trecloux</groupId>
+                        <artifactId>yeoman-maven-plugin</artifactId>
+                        <version>0.1</version>
+                        <configuration>
+                            <yeomanProjectDirectory>yo-sample/</yeomanProjectDirectory>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <phase>compile</phase>
+                                <goals>
+                                    <goal>build</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+
+
+
+
+                    <plugin>
+                        <artifactId>maven-clean-plugin</artifactId>
+                        <version>2.5</version>
+                        <configuration>
+                            <filesets>
+                                <fileset>
+                                    <directory>src/main/resources/SLING-INF/content/sample</directory>
+                                </fileset>
+                                <fileset>
+                                    <directory>yo-sample/.tmp</directory>
+                                </fileset>
+                                <fileset>
+                                    <directory>yo-sample/.sass-cache</directory>
+                                </fileset>
+                                <fileset>
+                                    <directory>yo-sample/dist</directory>
+                                </fileset>
+                            </filesets>
+                        </configuration>
+                    </plugin>
+
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+</project>

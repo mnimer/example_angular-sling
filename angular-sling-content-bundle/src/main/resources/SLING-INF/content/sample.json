@@ -1,0 +1,6 @@
+{
+    "jcr:primaryType" : "sling:Folder",
+    "sample":{
+        "jcr:primaryType" : "sling:Folder"
+    }
+}
