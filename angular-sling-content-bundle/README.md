@@ -1,0 +1,1 @@
+Starter project example for embedding rich web applications (grunt, angular, etc..) in Apache Sling
